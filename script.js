@@ -37,29 +37,37 @@ const mashPotatoes = [
 
 
   
-function makeFood(steps, id){
+async function makeFood(steps, id){
+  let promiseFn = [];
   for(const step of steps){
 
     //This function adds food to the list ==>  addFood('take steak from fridge', #steak)
-    addFood(step,id) 
-
+    
+    promiseFn.push( await addFood(step,id));
   }
-
+ 
   //Adds image to the table div
   document.querySelector('#table').innerHTML += (`<img src="images/${id.replace('#','')}.jpg" />`)
 
   //Use once all food is made 
   //document.body.innerHTML += `<button onclick="new Audio('dinnerIsServed.mp3').play()">Dinner is Served!</button>`
-  
+  return promiseFn;
 }
 
-
-makeFood(steak, '#steak')
-makeFood(mashPotatoes, '#mashPotatoes')
-makeFood(brusselSprouts, '#brusselSprouts')
-
-
-
+const objArr = [{steps:steak, id:'#steak'},
+                 {steps:mashPotatoes, id:'#mashPotatoes'},
+                {steps:brusselSprouts, id:'#brusselSprouts'}];
+const result = () => {
+  console.log('entering result')
+  let promises = [];
+  objArr.forEach((obj)=>{
+    promises.push(makeFood(obj.steps,obj.id));
+  })
+  Promise.all(promises).then(()=>{
+    document.body.innerHTML += `<button onclick="new Audio('dinnerIsServed.mp3').play()">Dinner is Served!</button>`
+  })
+}
+result();
 
 
 
